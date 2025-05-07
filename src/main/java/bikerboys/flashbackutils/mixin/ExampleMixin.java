@@ -19,11 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.reflect.Type;
 
-@Debug(export = true, print = true)
+@Debug(export = true)
 @Mixin(value = com.moulberry.flashback.keyframe.Keyframe.TypeAdapter.class, priority = 0)
 public class ExampleMixin {
 
-	@Inject(at = @At("HEAD"), method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lcom/moulberry/flashback/keyframe/Keyframe;", remap = false)
+	@Inject(at = @At("HEAD"), method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lcom/moulberry/flashback/keyframe/Keyframe;", remap = false, cancellable = true)
 	public void deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context, CallbackInfoReturnable<Keyframe> cir) {
 
 		System.out.println(cir.getReturnValue());
@@ -41,10 +41,13 @@ public class ExampleMixin {
 
 		}
 
+
 	}
 
-	@Inject(at = @At("HEAD"), method = "serialize(Lcom/moulberry/flashback/keyframe/Keyframe;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;", remap = false)
+	@Inject(at = @At("HEAD"), method = "serialize(Lcom/moulberry/flashback/keyframe/Keyframe;Ljava/lang/reflect/Type;Lcom/google/gson/JsonSerializationContext;)Lcom/google/gson/JsonElement;", remap = false, cancellable = true)
 	public void serialize(Keyframe src, Type typeOfSrc, JsonSerializationContext context, CallbackInfoReturnable<JsonElement> cir) {
+
+
 		System.out.println("AAAAAAAAA" + cir.getReturnValue());
 
 		ClientTickEvents.END_CLIENT_TICK.register((minecraftClient -> {
@@ -61,6 +64,8 @@ public class ExampleMixin {
 			default:
 				throw new IllegalStateException("Unexpected value: " + src);
 		}
+
+
 
 	}
 
