@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.lang.reflect.Type;
 
 @Debug(export = true)
-@Mixin(value = com.moulberry.flashback.keyframe.Keyframe.TypeAdapter.class, priority = 0)
+@Mixin(value = com.moulberry.flashback.keyframe.Keyframe.TypeAdapter.class, remap = false)
 public class ExampleMixin {
 
 	@Inject(at = @At("HEAD"), method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lcom/moulberry/flashback/keyframe/Keyframe;", remap = false, cancellable = true)
