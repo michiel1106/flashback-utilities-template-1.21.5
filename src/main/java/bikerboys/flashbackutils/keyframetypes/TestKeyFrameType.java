@@ -36,12 +36,12 @@ public class TestKeyFrameType implements KeyframeType<TestKeyFrame> {
 
     @Override
     public KeyframeCreatePopup<TestKeyFrame> createPopup() {
-        ImString timeOfDayKeyframeInput = new ImString();
+        ImString timeOfDayKeyframeInput = ImGuiHelper.createResizableImString("1");
         EditorState editorState = EditorStateManager.getCurrent();
 
 
         return () -> {
-            ImGui.inputText("int1", timeOfDayKeyframeInput);
+            ImGui.inputText("whatever", timeOfDayKeyframeInput);
             if (ImGui.button("Add")) {
                 return new TestKeyFrame(timeOfDayKeyframeInput);
             }

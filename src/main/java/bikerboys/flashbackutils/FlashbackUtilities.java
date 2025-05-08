@@ -2,6 +2,7 @@ package bikerboys.flashbackutils;
 
 import bikerboys.flashbackutils.keyframetypes.TestKeyFrameType;
 import com.moulberry.flashback.keyframe.KeyframeRegistry;
+import com.moulberry.flashback.keyframe.KeyframeType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
@@ -23,7 +24,8 @@ public class FlashbackUtilities implements ModInitializer, ClientModInitializer 
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		//KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
+		KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
+
 
 
 

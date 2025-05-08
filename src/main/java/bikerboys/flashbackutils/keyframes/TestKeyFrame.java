@@ -42,14 +42,15 @@ public class TestKeyFrame extends Keyframe {
 
     public void renderEditKeyframe(Consumer<Consumer<Keyframe>> update) {
         ImGui.setNextItemWidth(160.0F);
-        ImString input = new ImString();
-        if (ImGui.inputText("int1", input) && this.int1 != input) {
-            update.accept((keyframe) -> {
-                ((TestKeyFrame)keyframe).int1 = input;
-            });
+        ImString[] input = new ImString[]{new ImString("top text")}; // Use internal string
+        if (ImGui.inputText("idkman", input[0])) {
+            String newVal = input[0].toString();
+            if (!this.int1.get().equals(newVal)) {
+                update.accept((keyframe) -> {
+                    ((TestKeyFrame) keyframe).int1 = new ImString(newVal);
+                });
+            }
         }
-
-
     }
 
     public KeyframeChange createChange() {
@@ -76,18 +77,34 @@ public class TestKeyFrame extends Keyframe {
         public TypeAdapter() {
         }
 
+
         public TestKeyFrame deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
+
+            // Defensive check for required field "int1"
+            if (!jsonObject.has("int1")) {
+                throw new JsonParseException("Required field 'int1' is missing in JSON: " + jsonObject.toString());
+            }
+
             String text = jsonObject.get("int1").getAsString();
-            InterpolationType interpolationType = (InterpolationType)context.deserialize(jsonObject.get("interpolation_type"), InterpolationType.class);
+
+            // Defensive check for interpolation_type
+            if (!jsonObject.has("interpolation_type")) {
+                throw new JsonParseException("Required field 'interpolation_type' is missing in JSON: " + jsonObject.toString());
+            }
+
+            InterpolationType interpolationType = context.deserialize(jsonObject.get("interpolation_type"), InterpolationType.class);
             return new TestKeyFrame(new ImString(text), interpolationType);
         }
 
+
         public JsonElement serialize(TestKeyFrame src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("int1", String.valueOf(src.int1));
-            jsonObject.addProperty("type", "int1");
+
+            jsonObject.addProperty("int1", src.int1.get()); // Ensure this value is never null
+            jsonObject.addProperty("type", "testtype");
             jsonObject.add("interpolation_type", context.serialize(src.interpolationType()));
+
             return jsonObject;
         }
     }

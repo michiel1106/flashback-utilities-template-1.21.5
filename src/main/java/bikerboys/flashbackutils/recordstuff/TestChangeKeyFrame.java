@@ -15,7 +15,7 @@ public record TestChangeKeyFrame(ImString timeOfDay) implements KeyframeChange {
     public void apply(KeyframeHandler keyframeHandler) {
        // keyframeHandler.applyTimeOfDay(this.timeOfDay);
 
-        System.out.println(timeOfDay);
+        System.out.println(timeOfDay.get());
     }
 
     public KeyframeChange interpolate(KeyframeChange to, double amount) {
