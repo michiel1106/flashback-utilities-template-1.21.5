@@ -40,11 +40,19 @@ public class TestKeyFrame extends Keyframe {
         return new TestKeyFrame(this.int1, this.interpolationType());
     }
 
+
+
+
+    private final ImString persistentInput = new ImString(64);
+
     public void renderEditKeyframe(Consumer<Consumer<Keyframe>> update) {
+        if (persistentInput.getLength() == 0 && this.int1 != null) {
+            persistentInput.set(this.int1.get());
+        }
+
         ImGui.setNextItemWidth(160.0F);
-        ImString[] input = new ImString[]{new ImString("top text")}; // Use internal string
-        if (ImGui.inputText("idkman", input[0])) {
-            String newVal = input[0].toString();
+        if (ImGui.inputText("idkman", persistentInput)) {
+            String newVal = persistentInput.get();
             if (!this.int1.get().equals(newVal)) {
                 update.accept((keyframe) -> {
                     ((TestKeyFrame) keyframe).int1 = new ImString(newVal);
@@ -53,8 +61,13 @@ public class TestKeyFrame extends Keyframe {
         }
     }
 
+
+
+
+
+
     public KeyframeChange createChange() {
-        return new TestChangeKeyFrame(this.int1);
+        return new TestChangeKeyFrame(this.int1.get());
     }
 
     public KeyframeChange createSmoothInterpolatedChange(Keyframe p1, Keyframe p2, Keyframe p3, float t0, float t1, float t2, float t3, float amount) {
@@ -63,8 +76,8 @@ public class TestKeyFrame extends Keyframe {
         float time3 = t3 - t0;
         //int timeOfDay = (ImString) CatmullRom.value((ImString)this.int1, (ImString)((TestKeyFrame)p1).int1, (ImString)((TestKeyFrame)p2).int1, (ImString)((TestKeyFrame)p3).int1, time1, time2, time3, amount);
 
-        ImString timeOfDay = (ImString) this.int1;
-        return new TestChangeKeyFrame((ImString) this.int1);
+
+        return new TestChangeKeyFrame(this.int1.get());
     }
 
     @Override

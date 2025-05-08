@@ -1,21 +1,16 @@
 package bikerboys.flashbackutils.recordstuff;
 
-import com.moulberry.flashback.Interpolation;
 import com.moulberry.flashback.keyframe.change.KeyframeChange;
-import com.moulberry.flashback.keyframe.change.KeyframeChangeTimeOfDay;
 import com.moulberry.flashback.keyframe.handler.KeyframeHandler;
-import imgui.type.ImString;
 
-public record TestChangeKeyFrame(ImString timeOfDay) implements KeyframeChange {
 
-    public TestChangeKeyFrame(ImString timeOfDay) {
+
+public record TestChangeKeyFrame(String timeOfDay) implements KeyframeChange {
+    public TestChangeKeyFrame(String timeOfDay) {
         this.timeOfDay = timeOfDay;
     }
 
     public void apply(KeyframeHandler keyframeHandler) {
-       // keyframeHandler.applyTimeOfDay(this.timeOfDay);
-
-        System.out.println(timeOfDay.get());
     }
 
     public KeyframeChange interpolate(KeyframeChange to, double amount) {
@@ -23,7 +18,7 @@ public record TestChangeKeyFrame(ImString timeOfDay) implements KeyframeChange {
         return new TestChangeKeyFrame(timeOfDay);
     }
 
-    public ImString timeOfDay() {
+    public String timeOfDay() {
         return this.timeOfDay;
     }
 }
