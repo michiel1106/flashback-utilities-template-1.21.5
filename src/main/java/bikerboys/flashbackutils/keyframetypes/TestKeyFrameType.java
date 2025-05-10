@@ -1,18 +1,15 @@
 package bikerboys.flashbackutils.keyframetypes;
 
+
 import bikerboys.flashbackutils.keyframes.TestKeyFrame;
 import bikerboys.flashbackutils.recordstuff.TestChangeKeyFrame;
 import com.moulberry.flashback.editor.ui.ImGuiHelper;
 import com.moulberry.flashback.keyframe.KeyframeType;
 import com.moulberry.flashback.keyframe.change.KeyframeChange;
-import com.moulberry.flashback.keyframe.impl.TimeOfDayKeyframe;
-import com.moulberry.flashback.keyframe.types.TimeOfDayKeyframeType;
-import com.moulberry.flashback.state.EditorState;
-import com.moulberry.flashback.state.EditorStateManager;
+import com.moulberry.flashback.keyframe.handler.KeyframeHandler;
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
 
 public class TestKeyFrameType implements KeyframeType<TestKeyFrame> {
@@ -21,12 +18,12 @@ public class TestKeyFrameType implements KeyframeType<TestKeyFrame> {
 
     @Override
     public String name() {
-        return "Test Keyframe";
+        return "Hide Entity";
     }
 
     @Override
     public String id() {
-        return "TEST_KEYFRAME";
+        return "HIDE_ENTITY";
     }
 
     @Override
@@ -36,14 +33,15 @@ public class TestKeyFrameType implements KeyframeType<TestKeyFrame> {
 
     @Override
     public KeyframeCreatePopup<TestKeyFrame> createPopup() {
-        ImString timeOfDayKeyframeInput = ImGuiHelper.createResizableImString("1");
-        EditorState editorState = EditorStateManager.getCurrent();
+        ImString targetuuid = ImGuiHelper.createResizableImString("");
+        ImBoolean hidden = new ImBoolean();
 
 
         return () -> {
-            ImGui.inputText("whatever", timeOfDayKeyframeInput);
+            ImGui.inputText("Target Entity UUID", targetuuid);
+            ImGui.checkbox("Hidden", hidden);
             if (ImGui.button("Add")) {
-                return new TestKeyFrame(timeOfDayKeyframeInput);
+                return new TestKeyFrame(targetuuid, hidden.get());
             }
             ImGui.sameLine();
             if (ImGui.button("Cancel")) {
@@ -56,5 +54,10 @@ public class TestKeyFrameType implements KeyframeType<TestKeyFrame> {
     @Override
     public Class<? extends KeyframeChange> keyframeChangeType() {
         return TestChangeKeyFrame.class;
+    }
+
+    @Override
+    public boolean supportsHandler(KeyframeHandler handler) {
+        return true;
     }
 }
