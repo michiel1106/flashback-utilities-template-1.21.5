@@ -23,7 +23,7 @@ import java.util.UUID;
 public class FlashbackUtilities implements ModInitializer, ClientModInitializer {
 	public static final String MOD_ID = "flashback-utilities";
 
-	public static ModKeyframeHandler modKeyframeHandler = new ModKeyframeHandler();
+	public ModKeyframeHandler modKeyframeHandler = new ModKeyframeHandler();
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -39,22 +39,6 @@ public class FlashbackUtilities implements ModInitializer, ClientModInitializer 
 		KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
 
 
-		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("d").executes((context -> {
-
-			FlashbackUtilities.modKeyframeHandler.filteredEntities.forEach(((string, aBoolean) -> {
-				context.getSource().sendMessage(Text.literal(string));
-				context.getSource().sendMessage(Text.literal(context.getSource().getWorld().getEntity(UUID.fromString(string)).toString()));
-				context.getSource().sendMessage(Text.literal(aBoolean.toString()));
-
-
-			}));
-
-
-
-			return 1;
-		})))));
-
-
 
 		LOGGER.info("Hello Fabric world!");
 	}
@@ -63,9 +47,5 @@ public class FlashbackUtilities implements ModInitializer, ClientModInitializer 
 	public void onInitializeClient() {
 		KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
 
-
-
-
-		System.out.println(KeyframeRegistry.getTypes());
 	}
 }

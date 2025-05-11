@@ -45,10 +45,7 @@ public class TestKeyFrame extends Keyframe {
 
 
     public void renderEditKeyframe(Consumer<Consumer<Keyframe>> update) {
-        ImString persistentInput = new ImString(this.uuid.toString());
-        if (persistentInput.getLength() == 0 && this.uuid != null) {
-            persistentInput.set(this.uuid.get());
-        }
+
 
 
 
@@ -61,8 +58,9 @@ public class TestKeyFrame extends Keyframe {
         }
 
         ImGui.setNextItemWidth(160.0F);
-        if (ImGui.inputText("Target UUID", persistentInput)) {
-            String newVal = persistentInput.get();
+        if (ImGui.inputText("Target UUID", this.uuid)) {
+            String newVal = this.uuid.get();
+
             if (!this.uuid.get().equals(newVal)) {
                 update.accept((keyframe) -> {
                     ((TestKeyFrame) keyframe).uuid = new ImString(newVal);

@@ -29,18 +29,17 @@ public record TestChangeKeyFrame(String uuid, boolean hidden) implements Keyfram
 
         if (MinecraftClient.getInstance().world != null) {
 
-            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().world.getEntity(UUID.fromString(uuid)) != null) {
+            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().world.getEntity(UUID.fromString(this.uuid)) != null) {
 
-                Entity targetedEntity = MinecraftClient.getInstance().world.getEntity(UUID.fromString(uuid));
+                Entity targetedEntity = MinecraftClient.getInstance().world.getEntity(UUID.fromString(this.uuid));
 
                 if (targetedEntity.getUuid().toString().equals(uuid) && targetedEntity != null) {
 
-                    targetedEntity.setInvisible(hidden);
+                    targetedEntity.setInvisible(this.hidden);
                 }
 
             }
 
-            // FlashbackUtilities.modKeyframeHandler.filteredEntities.put(uuid, hidden);
         }
     }
 
@@ -55,8 +54,29 @@ public record TestChangeKeyFrame(String uuid, boolean hidden) implements Keyfram
 
 
 
+        boolean tohidden = ((TestChangeKeyFrame) to).hidden;
+        String touuid = ((TestChangeKeyFrame) to).uuid;
+
+        boolean fromhidden = this.hidden;
+        String fromuuid = this.uuid;
+
+
+        KeyframeChange from = new TestChangeKeyFrame(fromuuid, fromhidden);
+        KeyframeChange to1 = new TestChangeKeyFrame(touuid, fromhidden);
+
+        if (from == to1) {
+            return from;
+        } else if (from == null) {
+            return to1;
+        } else if (to1 == null) {
+            return from;
+        } else {
+            return from;
+        }
+
+
      //   FlashbackUtilities.modKeyframeHandler.filteredEntities.put(uuid, this.hidden);
-        return this;  // Return the current keyframe (or you could return the target keyframe).
+        // Return the current keyframe (or you could return the target keyframe).
     }
 
 
