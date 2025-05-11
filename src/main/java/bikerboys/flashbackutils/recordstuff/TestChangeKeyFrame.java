@@ -8,9 +8,12 @@ import com.moulberry.flashback.keyframe.handler.KeyframeHandler;
 import com.moulberry.flashback.keyframe.impl.TickrateKeyframe;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import org.apache.commons.math3.analysis.function.Min;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 public record TestChangeKeyFrame(String uuid, boolean hidden) implements KeyframeChange {
@@ -24,11 +27,21 @@ public record TestChangeKeyFrame(String uuid, boolean hidden) implements Keyfram
     @Override
     public void apply(KeyframeHandler keyframeHandler) {
 
+        if (MinecraftClient.getInstance().world != null) {
 
+            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().world.getEntity(UUID.fromString(uuid)) != null) {
 
-        FlashbackUtilities.modKeyframeHandler.filteredEntities.put(uuid, hidden);
+                Entity targetedEntity = MinecraftClient.getInstance().world.getEntity(UUID.fromString(uuid));
 
+                if (targetedEntity.getUuid().toString().equals(uuid) && targetedEntity != null) {
 
+                    targetedEntity.setInvisible(hidden);
+                }
+
+            }
+
+            // FlashbackUtilities.modKeyframeHandler.filteredEntities.put(uuid, hidden);
+        }
     }
 
     public boolean isHidden() {
