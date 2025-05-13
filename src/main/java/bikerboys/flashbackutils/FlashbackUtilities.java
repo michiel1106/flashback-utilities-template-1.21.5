@@ -1,27 +1,25 @@
 package bikerboys.flashbackutils;
 
-import bikerboys.flashbackutils.keyframetypes.TestKeyFrameType;
+import bikerboys.flashbackutils.keyframetypes.HideEntityKeyframeType;
+import com.moulberry.flashback.Flashback;
 import com.moulberry.flashback.keyframe.KeyframeRegistry;
-import com.moulberry.flashback.keyframe.KeyframeType;
-import com.moulberry.flashback.playback.ReplayServer;
-import com.moulberry.flashback.state.EditorScene;
-import com.moulberry.flashback.state.EditorState;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
-
 public class FlashbackUtilities implements ModInitializer, ClientModInitializer {
 	public static final String MOD_ID = "flashback-utilities";
+
+	public static SimpleOption<Boolean> EXTRA_TOGGLE;
+
+	public static boolean RecordingHotbar;
 
 	public ModKeyframeHandler modKeyframeHandler = new ModKeyframeHandler();
 
@@ -36,7 +34,9 @@ public class FlashbackUtilities implements ModInitializer, ClientModInitializer 
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
+		//KeyframeRegistry.register(HideEntityKeyframeType.INSTANCE);
+
+
 
 
 
@@ -45,7 +45,30 @@ public class FlashbackUtilities implements ModInitializer, ClientModInitializer 
 
 	@Override
 	public void onInitializeClient() {
-		KeyframeRegistry.register(TestKeyFrameType.INSTANCE);
+		Identifier MY_HUD_LAYER = Identifier.of(MOD_ID, "custom_layer");
+		Identifier IMAGE_TEXTURE = Identifier.of(MOD_ID, "textures/gui/recordingicon.png");
 
+		KeyframeRegistry.register(HideEntityKeyframeType.INSTANCE);
+
+		HudLayerRegistrationCallback.EVENT.register((drawer) -> {
+
+
+
+			drawer.attachLayerAfter(IdentifiedLayer.CROSSHAIR, MY_HUD_LAYER, ((context, tickCounter) -> {
+				if (Flashback.RECORDER != null) {
+
+//public void drawTexture(Function<Identifier, RenderLayer> renderLayers, Identifier sprite, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+
+
+					int x = context.getScaledWindowWidth() / 2 + 390;
+					int y = context.getScaledWindowHeight() / 2 - 240;
+					int u = 0;
+					int v = 0;
+					int numbs = 28;
+
+					context.drawTexture(RenderLayer::getGuiTextured, IMAGE_TEXTURE, x, y, u, v, numbs, numbs, numbs, numbs);
+				}
+			}));
+		});
 	}
 }

@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"bikerboys.flashbackutils.FlashbackUtilities"
+		],
+		"client": [
+			"bikerboys.flashbackutils.FlashbackUtilities"
 		]
 	},
 	"mixins": [
