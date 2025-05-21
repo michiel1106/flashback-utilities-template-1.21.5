@@ -1,8 +1,8 @@
-package bikerboys.flashbackutils.keyframetypes;
+package bikerboys.flashbackutils.keyframetypes.HideEntity;
 
 
-import bikerboys.flashbackutils.keyframes.HideEntityKeyframe;
-import bikerboys.flashbackutils.recordstuff.HideEntityKeyframeChange;
+import bikerboys.flashbackutils.keyframes.HideEntity.HideEntityKeyframe;
+import bikerboys.flashbackutils.recordstuff.HideEntity.HideEntityKeyframeChange;
 import com.moulberry.flashback.keyframe.KeyframeType;
 import com.moulberry.flashback.keyframe.change.KeyframeChange;
 import com.moulberry.flashback.keyframe.handler.KeyframeHandler;
@@ -32,13 +32,18 @@ public class HideEntityKeyframeType implements KeyframeType<HideEntityKeyframe> 
 
     @Override
     public KeyframeCreatePopup<HideEntityKeyframe> createPopup() {
-        ImString targetuuid = new ImString(128);
+        ImString targetuuid = new ImString();
+
+        targetuuid.inputData.isResizable = true;
+        targetuuid.inputData.resizeFactor = 100;
+
         ImBoolean hidden = new ImBoolean();
 
 
         return () -> {
             ImGui.inputText("Target Entity UUID", targetuuid);
             ImGui.checkbox("Hidden", hidden);
+
             if (ImGui.button("Add")) {
                 return new HideEntityKeyframe(targetuuid, hidden.get());
             }

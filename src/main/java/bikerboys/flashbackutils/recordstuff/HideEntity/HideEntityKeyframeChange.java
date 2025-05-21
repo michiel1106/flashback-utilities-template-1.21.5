@@ -1,4 +1,4 @@
-package bikerboys.flashbackutils.recordstuff;
+package bikerboys.flashbackutils.recordstuff.HideEntity;
 
 
 import com.moulberry.flashback.keyframe.change.KeyframeChange;
@@ -19,6 +19,10 @@ public record HideEntityKeyframeChange(String uuid, boolean hidden) implements K
 
     @Override
     public void apply(KeyframeHandler keyframeHandler) {
+
+
+       // System.out.println("help " + this.uuid + " " + this.hidden);
+
 
         if (MinecraftClient.getInstance().world != null) {
 

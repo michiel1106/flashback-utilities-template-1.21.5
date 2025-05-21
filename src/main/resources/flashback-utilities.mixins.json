@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ConfigRegistryMixin",
+    "EditorStateMixin",
     "RegisterMixin",
     "typeadaptermixin"
   ],
@@ -11,6 +12,5 @@
     "defaultRequire": 1
   },
   "client": [
-
   ]
 }

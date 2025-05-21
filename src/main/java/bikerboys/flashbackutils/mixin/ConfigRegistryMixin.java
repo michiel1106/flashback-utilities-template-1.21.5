@@ -2,6 +2,7 @@ package bikerboys.flashbackutils.mixin;
 
 
 import bikerboys.flashbackutils.FlashbackUtilities;
+import bikerboys.flashbackutils.interfaces.FlashbackConfigAccess;
 import com.moulberry.flashback.configuration.FlashbackConfig;
 import com.moulberry.flashback.configuration.OptionCaption;
 import com.moulberry.flashback.configuration.OptionDescription;
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(FlashbackConfig.class)
-public class ConfigRegistryMixin {
+public class ConfigRegistryMixin implements FlashbackConfigAccess {
     
     
 
@@ -21,4 +22,14 @@ public class ConfigRegistryMixin {
 
 
 
+    @Override
+    public boolean getRecordingIcon() {
+        return this.recordingIcon;
+    }
+
+    @Override
+    public void setRecordingIcon(boolean value) {
+
+        this.setRecordingIcon(value);
+    }
 }

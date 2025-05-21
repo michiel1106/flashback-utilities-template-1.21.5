@@ -1,13 +1,13 @@
 package bikerboys.flashbackutils.mixin;
 
-import bikerboys.flashbackutils.keyframes.HideEntityKeyframe;
+import bikerboys.flashbackutils.keyframes.HideEntity.HideEntityKeyframe;
+import bikerboys.flashbackutils.keyframes.chat.ChatKeyframe;
+import bikerboys.flashbackutils.keyframes.command.ExecuteCommandKeyframe;
 import com.google.gson.*;
 import com.moulberry.flashback.keyframe.Keyframe;
-import com.moulberry.flashback.keyframe.impl.*;
 import com.moulberry.flashback.keyframe.interpolation.InterpolationType;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -31,6 +31,24 @@ public class RegisterMixin {
 			cir.setReturnValue(jsonObject);
 			cir.cancel();
 		}
+		if (src instanceof ChatKeyframe chatKeyframe) {
+			JsonObject jsonObject;
+
+			jsonObject = (JsonObject)context.serialize(chatKeyframe);
+			jsonObject.addProperty("type", "chat");
+			jsonObject.add("interpolation_type", context.serialize(src.interpolationType()));
+			cir.setReturnValue(jsonObject);
+			cir.cancel();
+		}
+		if (src instanceof ExecuteCommandKeyframe executeCommandKeyframe) {
+			JsonObject jsonObject;
+
+			jsonObject = (JsonObject)context.serialize(executeCommandKeyframe);
+			jsonObject.addProperty("type", "executecommand");
+			jsonObject.add("interpolation_type", context.serialize(src.interpolationType()));
+			cir.setReturnValue(jsonObject);
+			cir.cancel();
+		}
 
 	}
 
@@ -48,6 +66,19 @@ public class RegisterMixin {
 					cir.setReturnValue(tempkeyframe);
 					cir.cancel();
 				}
+				case "chat" -> {
+					tempkeyframe = (Keyframe) context.deserialize(json, ChatKeyframe.class);
+					tempkeyframe.interpolationType((InterpolationType) context.deserialize(jsonObject.get("interpolation_type"), InterpolationType.class));
+					cir.setReturnValue(tempkeyframe);
+					cir.cancel();
+				}
+				case "executecommand" -> {
+					tempkeyframe = (Keyframe) context.deserialize(json, ExecuteCommandKeyframe.class);
+					tempkeyframe.interpolationType((InterpolationType) context.deserialize(jsonObject.get("interpolation_type"), InterpolationType.class));
+					cir.setReturnValue(tempkeyframe);
+					cir.cancel();
+				}
+
 
 			}
 		}

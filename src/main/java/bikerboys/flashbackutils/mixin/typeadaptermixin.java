@@ -1,7 +1,9 @@
 package bikerboys.flashbackutils.mixin;
 
 
-import bikerboys.flashbackutils.keyframes.HideEntityKeyframe;
+import bikerboys.flashbackutils.keyframes.HideEntity.HideEntityKeyframe;
+import bikerboys.flashbackutils.keyframes.chat.ChatKeyframe;
+import bikerboys.flashbackutils.keyframes.command.ExecuteCommandKeyframe;
 import com.google.gson.GsonBuilder;
 import com.moulberry.flashback.FlashbackGson;
 import org.spongepowered.asm.mixin.Debug;
@@ -22,6 +24,8 @@ public class typeadaptermixin {
 
         // Inject your custom keyframe adapter
         builder.registerTypeAdapter(HideEntityKeyframe.class, new HideEntityKeyframe.TypeAdapter());
+        builder.registerTypeAdapter(ChatKeyframe.class, new ChatKeyframe.TypeAdapter());
+        builder.registerTypeAdapter(ExecuteCommandKeyframe.class, new ExecuteCommandKeyframe.TypeAdapter());
 
         cir.setReturnValue(builder);
 

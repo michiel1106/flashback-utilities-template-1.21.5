@@ -1,8 +1,8 @@
-package bikerboys.flashbackutils.keyframes;
+package bikerboys.flashbackutils.keyframes.HideEntity;
 
 
-import bikerboys.flashbackutils.keyframetypes.HideEntityKeyframeType;
-import bikerboys.flashbackutils.recordstuff.HideEntityKeyframeChange;
+import bikerboys.flashbackutils.keyframetypes.HideEntity.HideEntityKeyframeType;
+import bikerboys.flashbackutils.recordstuff.HideEntity.HideEntityKeyframeChange;
 import com.google.gson.*;
 import com.moulberry.flashback.keyframe.Keyframe;
 import com.moulberry.flashback.keyframe.KeyframeType;
@@ -43,10 +43,6 @@ public class HideEntityKeyframe extends Keyframe {
 
 
     public void renderEditKeyframe(Consumer<Consumer<Keyframe>> update) {
-
-
-
-
         ImGui.setNextItemWidth(160.0F);
         if (ImGui.checkbox("Hidden", this.hidden)) {
             boolean newHidden = !this.hidden;
@@ -54,23 +50,22 @@ public class HideEntityKeyframe extends Keyframe {
                 ((HideEntityKeyframe)keyframe).hidden = newHidden;
             });
         }
-
         ImGui.setNextItemWidth(160.0F);
         if (ImGui.inputText("Target UUID", this.uuid)) {
 
-            String whatever = new String();
             String newVal = this.uuid.get();
-
-
-
             if (!this.uuid.get().equals(newVal)) {
                 update.accept((keyframe) -> {
-                    ((HideEntityKeyframe) keyframe).uuid = new ImString(newVal, 128);
+                    ImString imString = new ImString();
+                    imString.set(newVal);
+                    imString.inputData.resizeFactor = 100;
+                    imString.inputData.isResizable = true;
+
+
+                    ((HideEntityKeyframe) keyframe).uuid = imString;
                 });
             }
         }
-
-
     }
 
 

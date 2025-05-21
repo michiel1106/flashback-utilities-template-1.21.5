@@ -1,74 +1,123 @@
 package bikerboys.flashbackutils;
 
-import bikerboys.flashbackutils.keyframetypes.HideEntityKeyframeType;
+import bikerboys.flashbackutils.interfaces.FlashbackConfigAccess;
+import bikerboys.flashbackutils.keyframetypes.Chat.ChatKeyframeType;
+import bikerboys.flashbackutils.keyframetypes.HideEntity.HideEntityKeyframeType;
+import bikerboys.flashbackutils.keyframetypes.command.ExecuteCommandKeyframeType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.moulberry.flashback.Flashback;
 import com.moulberry.flashback.keyframe.KeyframeRegistry;
+import com.moulberry.flashback.packet.FlashbackClearEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+
 public class FlashbackUtilities implements ModInitializer, ClientModInitializer {
 	public static final String MOD_ID = "flashback-utilities";
-
-	public static SimpleOption<Boolean> EXTRA_TOGGLE;
-
-	public static boolean RecordingHotbar;
-
-	public ModKeyframeHandler modKeyframeHandler = new ModKeyframeHandler();
-
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static List<TextRenderObject> textlist = new ArrayList<>();
+	public static boolean resetchat;
+	public static final Set<Object> executedKeyframes = new HashSet<>();
+	Identifier MY_HUD_LAYER = Identifier.of(MOD_ID, "custom_layer");
+	Identifier IMAGE_TEXTURE = Identifier.of(MOD_ID, "textures/gui/recordingicon.png");
+	FlashbackConfigAccess cfg = (FlashbackConfigAccess) Flashback.getConfig();
+
+
 
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
 
-		//KeyframeRegistry.register(HideEntityKeyframeType.INSTANCE);
-
-
-
-
-
-		LOGGER.info("Hello Fabric world!");
 	}
+
+
+
 
 	@Override
 	public void onInitializeClient() {
-		Identifier MY_HUD_LAYER = Identifier.of(MOD_ID, "custom_layer");
-		Identifier IMAGE_TEXTURE = Identifier.of(MOD_ID, "textures/gui/recordingicon.png");
 
-		KeyframeRegistry.register(HideEntityKeyframeType.INSTANCE);
+
 
 		HudLayerRegistrationCallback.EVENT.register((drawer) -> {
+			drawer.attachLayerAfter(IdentifiedLayer.CROSSHAIR, Identifier.of(MOD_ID, "textrenderer"), ((context, tickCounter) -> {
+
+				textlist.forEach((textRenderObject -> {
+					int color = textRenderObject.color;
+					Text text = textRenderObject.text;
+					int size = textRenderObject.size;
+					int x = textRenderObject.x;
+					int y = textRenderObject.y;
+
+					context.drawText(MinecraftClient.getInstance().textRenderer, text, context.getScaledWindowWidth()/2 + x , context.getScaledWindowHeight()/2 + y, color, false);
+
+
+				}));
+
+			}));
+
+		});
+
+		ClientCommandRegistrationCallback.EVENT.register((dispactcher, commandregistry) -> dispactcher.register(ClientCommandManager.literal("text").then(ClientCommandManager.argument("text", StringArgumentType.string()).then(ClientCommandManager.argument("x", IntegerArgumentType.integer()).then(ClientCommandManager.argument("y", IntegerArgumentType.integer()).executes(context -> {
+
+			String string = StringArgumentType.getString(context, "text");
+			int x = IntegerArgumentType.getInteger(context, "x");
+			int y = IntegerArgumentType.getInteger(context, "y");
+
+			TextRenderObject what = new TextRenderObject(Text.literal(string), 1, 32232, x, y);
+			textlist.add(what);
+
+			return 1;
+		}))))));
 
 
 
+
+
+
+		KeyframeRegistry.register(HideEntityKeyframeType.INSTANCE);
+		KeyframeRegistry.register(ChatKeyframeType.INSTANCE);
+		KeyframeRegistry.register(ExecuteCommandKeyframeType.INSTANCE);
+
+
+
+
+
+		HudLayerRegistrationCallback.EVENT.register((drawer) -> {
 			drawer.attachLayerAfter(IdentifiedLayer.CROSSHAIR, MY_HUD_LAYER, ((context, tickCounter) -> {
-				if (Flashback.RECORDER != null) {
+				if (cfg != null) {
+					boolean isrecordingiconenabled = cfg.getRecordingIcon();
 
-//public void drawTexture(Function<Identifier, RenderLayer> renderLayers, Identifier sprite, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+					if (Flashback.RECORDER != null && isrecordingiconenabled) {
+						int x = context.getScaledWindowWidth() / 2 + 390;
+						int y = context.getScaledWindowHeight() / 2 - 240;
+						int u = 0;
+						int v = 0;
+						int numbs = 28;
 
-
-					int x = context.getScaledWindowWidth() / 2 + 390;
-					int y = context.getScaledWindowHeight() / 2 - 240;
-					int u = 0;
-					int v = 0;
-					int numbs = 28;
-
-					context.drawTexture(RenderLayer::getGuiTextured, IMAGE_TEXTURE, x, y, u, v, numbs, numbs, numbs, numbs);
+						context.drawTexture(RenderLayer::getGuiTextured, IMAGE_TEXTURE, x, y, u, v, numbs, numbs, numbs, numbs);
+					}
 				}
 			}));
 		});
+
+
+
 	}
 }
